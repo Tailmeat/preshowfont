@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>폰트 미리보기</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+        }
+
+        #myInput {
+            width: 300px;
+            height: 25px;
+            font-size: 16px;
+            padding: 5px;
+        }
+
+        #outputBox {
+            margin-top: 15px;
+            height: auto;
+            min-height: 50px;
+            border: 1px solid black;
+            padding: 10px;
+            line-height: 1.5;
+        }
+
+        #myOutput span {
+            display: inline-block;
+        }
+
+        .controls {
+            margin-top: 10px;
+        }
+
+        .controls label {
+            margin-right: 10px;
+        }
+
+        #copyBtn {
+            margin-top: 10px;
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>폰트 미리보기</h2>
+
+    <input type="text" id="myInput" placeholder="텍스트를 입력해 보세요">
+    <div class="controls">
+        <label><input type="radio" name="font" value="Gungsuh" checked> 궁서체</label>
+        <label><input type="radio" name="font" value="Gulim"> 굴림체</label>
+        <label><input type="radio" name="font" value="Malgun Gothic"> 고딕체</label>
+    </div>
+
+    <div class="controls">
+        <label>글자 색상: <input type="color" id="colorPicker" value="#000000"></label>
+        <label>배경 색상: <input type="color" id="bgPicker" value="#ffffff"></label>
+    </div>
+
+    <div class="controls">
+        <label>글자 크기:
+            <input type="range" id="fontSizeSlider" min="10" max="50" value="20">
+            <span id="fontSizeValue">20</span>px
+        </label>
+    </div>
+
+    <button id="copyBtn">복사하기</button>
+
+    <div id="outputBox">
+        <span id="myOutput"></span>
+    </div>
+
+    <script>
+        const inputEl = document.getElementById("myInput");
+        const outputEl = document.getElementById("myOutput");
+        const fontRadios = document.getElementsByName("font");
+        const colorPicker = document.getElementById("colorPicker");
+        const bgPicker = document.getElementById("bgPicker");
+        const fontSizeSlider = document.getElementById("fontSizeSlider");
+        const fontSizeValue = document.getElementById("fontSizeValue");
+        const copyBtn = document.getElementById("copyBtn");
+        const outputBox = document.getElementById("outputBox");
+
+        function getSelectedFontFamily() {
+            for (let i = 0; i < fontRadios.length; i++) {
+                if (fontRadios[i].checked) {
+                    return fontRadios[i].value;
+                }
+            }
+            return "Gungsuh";
+        }
+
+        function updateOutput() {
+            const text = inputEl.value;
+            const fontFamily = getSelectedFontFamily();
+            const color = colorPicker.value;
+            const bgColor = bgPicker.value;
+            const fontSize = fontSizeSlider.value;
+
+            outputEl.style.fontFamily = fontFamily;
+            outputEl.style.color = color;
+            outputEl.style.fontSize = `${fontSize}px`;
+            outputBox.style.backgroundColor = bgColor;
+
+            fontSizeValue.textContent = fontSize;
+
+            outputEl.innerHTML = text;
+        }
+
+        inputEl.addEventListener("input", updateOutput);
+        colorPicker.addEventListener("input", updateOutput);
+        bgPicker.addEventListener("input", updateOutput);
+        fontSizeSlider.addEventListener("input", updateOutput);
+        fontRadios.forEach(radio => radio.addEventListener("change", updateOutput));
+
+        copyBtn.addEventListener("click", () => {
+            navigator.clipboard.writeText(inputEl.value)
+                .then(() => alert("복사되었습니다!"))
+                .catch(err => alert("복사 실패: " + err));
+        });
+
+        updateOutput();
+    </script>
+</body>
+
+</html>
